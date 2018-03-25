@@ -6,9 +6,9 @@ from dbw_mkz_msgs.msg import ThrottleCmd, SteeringCmd, BrakeCmd, SteeringReport
 from geometry_msgs.msg import TwistStamped
 import math
 
-from twist_controller import Controller
+from controller import Controller
 from dynamic_reconfigure.server import Server
-from twist_controller.cfg import PidGainsConfig
+#from twist_controller.cfg import PidGainsConfig
 '''
 You can build this node only after you have built (or partially built) the `waypoint_updater` node.
 
@@ -62,7 +62,7 @@ class DBWNode(object):
         car_data.steer_ratio = rospy.get_param('~steer_ratio', 14.8)
         car_data.max_lat_accel = rospy.get_param('~max_lat_accel', 3.)
         car_data.max_steer_angle = rospy.get_param('~max_steer_angle', 8.)
-        car_data.min_speed = 0.1
+        car_data.min_speed = 1
 
         self.steer_pub = rospy.Publisher('/vehicle/steering_cmd',
                                          SteeringCmd, queue_size=1)
@@ -80,7 +80,7 @@ class DBWNode(object):
         rospy.Subscriber('/twist_cmd', TwistStamped, self.twist_cmd_cb, queue_size=1)
 
         # For Dynamic Configuration of PID
-        server = Server(PidGainsConfig, self.dynamic_config_cb)
+        #server = Server(PidGainsConfig, self.dynamic_config_cb)
 
         # Values which needs to be monitored
         self.ref_lin_vel = 0
@@ -102,7 +102,7 @@ class DBWNode(object):
 
             # You should only publish the control commands if dbw is enabled
             if self.dbw_enabled:
-                self.publish(throttle, brake, steer)
+                self.publish(throttle, brake, steering)
 
             rate.sleep()
 
@@ -124,10 +124,10 @@ class DBWNode(object):
         bcmd.pedal_cmd = brake
         self.brake_pub.publish(bcmd)
 
-    def dynamic_config_cb(self, config, level):
-        rospy.loginfo("Updated PID gains: {throttle_Kp}, {throttle_Ki}, {throttle_Kd}".format(**config))
-        self.controller.update_gains(config['throttle_Kp'], config['throttle_Ki'], config['throttle_Kd'])
-        return config
+    #def dynamic_config_cb(self, config, level):
+    #    rospy.loginfo("Updated PID gains: {throttle_Kp}, {throttle_Ki}, {throttle_Kd}".format(**config))
+    #    self.controller.update_gains(config['throttle_Kp'], config['throttle_Ki'], config['throttle_Kd'])
+    #    return config
 
     def dbw_enabled_cb(self, msg):
         self.dbw_enabled = msg.data

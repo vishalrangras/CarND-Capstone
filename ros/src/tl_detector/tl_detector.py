@@ -115,7 +115,7 @@ class TLDetector(object):
         #TODO implement
         car_x = pose.position.x
         car_y = pose.position.y
-        car_w = pose.position.w
+        car_w = pose.orientation.w
         car_theta = 2 * np.arccos(car_w)
 
         if car_theta > np.pi:
@@ -186,15 +186,15 @@ class TLDetector(object):
         #    return light_wp, state
         #self.waypoints = None
 
-        if (self.light_waypoints_list != None and self.pose != None):
-            max_light_waypoint = self.light_waypoints_list[-1]["wp"]
+        if (self.pose != None and self.light_waypoints_list != None):
+            max_light_waypoint = self.light_waypoints_list[-1]["waypoint"]
             closest_waypoint = self.get_closest_waypoint(self.pose.pose)
-            light_waypoint = self.light_waypoints_list[self.light]["wp"]
+            light_waypoint = self.light_waypoints_list[self.light]["waypoint"]
 
             if (closest_waypoint > light_waypoint):
                 if (self.light != 0 or closest_waypoint < max_light_waypoint):
                     self.light = (self.light + 1) % len(self.light_waypoints_list)
-                    light_waypoint = self.light_waypoints_list[self.light]["wp"]
+                    light_waypoint = self.light_waypoints_list[self.light]["waypoint"]
 
             state = self.get_light_state(self.light)
             return light_waypoint, state
@@ -213,11 +213,11 @@ class TLDetector(object):
 
             waypoint_dict = {'ind':i, 'waypoint':closest_light_waypoint}
 
-            stop_lines_waypoints_list.append(d)
+            stop_lines_waypoints_list.append(waypoint_dict)
 
-            sorted_waypoints_list = sorted(stop_lines_waypoints_list, key=lambda k: k['wp'])
+            sorted_waypoints_list = sorted(stop_lines_waypoints_list, key=lambda k: k['waypoint'])
 
-            return sorted_list
+            return sorted_waypoints_list
         
 
 

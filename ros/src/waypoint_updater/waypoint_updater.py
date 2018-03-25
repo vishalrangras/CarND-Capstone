@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
 import rospy
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, TwistStamped
 from styx_msgs.msg import Lane, Waypoint
-
+from std_msgs.msg import Int32
+from scipy import spatial
+import numpy as np
 import math
 
 '''
@@ -59,10 +61,10 @@ class WaypointUpdater(object):
 
         #rospy.spin()
 
-    def self.get_vel_in_mps(self, velocity):
+    def get_vel_in_mps(self, velocity):
         return (velocity * 1000.) / (60. * 60.)
 
-    def self.get_next_waypoint_index():
+    def get_next_waypoint_index(self):
         car_x = self.current_pose.position.x
         car_y = self.current_pose.position.y
         car_w = self.current_pose.orientation.w
@@ -72,7 +74,7 @@ class WaypointUpdater(object):
         if car_theta > np.pi:
             car_theta = -(2 * np.pi - car_theta)
 
-        if self.tree is None:
+        if self.tree == None:
             waypoint_list = []
             for index, waypoint in enumerate(self.base_waypoints):
                 x = waypoint.pose.pose.position.x
@@ -95,14 +97,15 @@ class WaypointUpdater(object):
     def publish_waypoints(self, next_waypoint):
         msg = Lane()
         msg.waypoints = []
+        index = next_waypoint
         for i in range(LOOKAHEAD_WPS):
             waypoint = Waypoint()
-            waypoint.pose.pose.position.x = self.base_waypoints[next_waypoint].pose.pose.position.x
-            waypoint.pose.pose.position.y = self.base_waypoints[next_waypoint].pose.pose.position.y
-            waypoint.twist.twist.linear.x = self.base_waypoints[next_waypoint].twist.twis.linear.x
+            waypoint.pose.pose.position.x = self.base_waypoints[index].pose.pose.position.x
+            waypoint.pose.pose.position.y = self.base_waypoints[index].pose.pose.position.y
+            waypoint.twist.twist.linear.x = self.base_waypoints[index].twist.twist.linear.x
             msg.waypoints.append(waypoint)
             #Verify
-            next_waypoint = (next_waypoint + 1) % len(self.base_waypoints)
+            index = (index + 1) % len(self.base_waypoints)
 
         self.final_waypoints_pub.publish(msg)
     
@@ -143,7 +146,11 @@ class WaypointUpdater(object):
                     self.brake_range.append((self.next_waypoint, waypoint_index))
                     self.on_brake = True
 
-                else:
+                elif (ref_acceleration < 2):
+                    # We don't need to react since it is too early to brake
+                    pass
+                else: 
+                    # There is no point in braking since it is too late
                     pass
 
             if (waypoint_index == -1 and self.last_stopline_waypoint != -1):
