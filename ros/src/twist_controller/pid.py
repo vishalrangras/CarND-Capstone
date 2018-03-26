@@ -32,8 +32,3 @@ class PID(object):
         self.last_error = error
 
         return val
-
-    def set_gain_values(self, kp, ki, kd):
-        self.kp = kp
-        self.ki = ki
-        self.kd = kd

@@ -7,8 +7,6 @@ from geometry_msgs.msg import TwistStamped
 import math
 
 from controller import Controller
-from dynamic_reconfigure.server import Server
-#from twist_controller.cfg import PidGainsConfig
 '''
 You can build this node only after you have built (or partially built) the `waypoint_updater` node.
 
@@ -76,11 +74,8 @@ class DBWNode(object):
 
         # TODO: Subscribe to all the topics you need to
         rospy.Subscriber('/vehicle/dbw_enabled', Bool, self.dbw_enabled_cb, queue_size=1)
-        rospy.Subscriber('/currrent_velocity', TwistStamped, self.act_vel_cb, queue_size=1)
+        rospy.Subscriber('/current_velocity', TwistStamped, self.act_vel_cb, queue_size=1)
         rospy.Subscriber('/twist_cmd', TwistStamped, self.twist_cmd_cb, queue_size=1)
-
-        # For Dynamic Configuration of PID
-        #server = Server(PidGainsConfig, self.dynamic_config_cb)
 
         # Values which needs to be monitored
         self.ref_lin_vel = 0
@@ -124,11 +119,6 @@ class DBWNode(object):
         bcmd.pedal_cmd = brake
         self.brake_pub.publish(bcmd)
 
-    #def dynamic_config_cb(self, config, level):
-    #    rospy.loginfo("Updated PID gains: {throttle_Kp}, {throttle_Ki}, {throttle_Kd}".format(**config))
-    #    self.controller.update_gains(config['throttle_Kp'], config['throttle_Ki'], config['throttle_Kd'])
-    #    return config
-
     def dbw_enabled_cb(self, msg):
         self.dbw_enabled = msg.data
         rospy.loginfo('The state of dbw_enabled is: {}'.format(self.dbw_enabled))
@@ -139,7 +129,7 @@ class DBWNode(object):
 
     def twist_cmd_cb(self, msg):
         self.ref_lin_vel = msg.twist.linear.x
-        self.ref_ang_vel = msg.twist.linear.z
+        self.ref_ang_vel = msg.twist.angular.z
 
 
 if __name__ == '__main__':

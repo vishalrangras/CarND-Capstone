@@ -62,6 +62,3 @@ class Controller(object):
 
         # Return throttle, brake, steer
         return throttle, brake, steer
-
-    #def update_gains(self, kp, ki, kd):
-    #    self.pid.set_gain_values(kp=kp, ki=ki, kd=kd)
