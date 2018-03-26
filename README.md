@@ -1,6 +1,6 @@
-### Programming a Real Self-Driving Car - System Integration Project ###
+### Programming a Real Self-Driving Car - System Integration Project - Individual / Non-team submission ###
 
-Submitted by - Vishal Rangras
+Submitted by - Vishal Rangras - vishalrangras@hotmail.com
 
 ##### Programming a real car to drive-by-wire, following published waypoints for the given track, while stopping at Traffic Signal lights based on their states. #####
 
