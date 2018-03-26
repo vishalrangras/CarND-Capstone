@@ -6,11 +6,11 @@ Submitted by - Vishal Rangras
 
 The goals for this project are to:
 
-1. Implement Waypoint Updater Node of ROS project which publishes the next 200 waypoints and their target velocity based on the current position, base waypoint data and state of the traffic light ahead of current position. This node works basically as a ** Planning ** Part of the autonomous vehicle system which plans the trajectory needed to be followed by car along with the desired velocity to be followed on that trajectory.
-2. Implement DBW Node, which stands for Drive-By-Wire Node of ROS project. This node leverages a PID controller to decide value of throttle and brake, a Yaw Controller to decide value of steering of the car and a low pass filter for smoothing values of steering. It leverages the data coming from Waypoint Updater node to generate actuation signals and works as a ** Control ** Part of the autonomous vehicle system.
-3. Implement TLDetector Node, which detects a Traffic Light and Classify its states based on the camera feed which car receives from a dashcam. This node provides its detection indication to Waypoint Updater which then update target velocity of the upcoming waypoints which are to be followed by the car and also decides if braking is needed in case light state is RED. This node serves as ** Perception ** Part of the autonomous vehicle system.
+1. Implement Waypoint Updater Node of ROS project which publishes the next 200 waypoints and their target velocity based on the current position, base waypoint data and state of the traffic light ahead of current position. This node works basically as a **Planning** Part of the autonomous vehicle system which plans the trajectory needed to be followed by car along with the desired velocity to be followed on that trajectory.
+2. Implement DBW Node, which stands for Drive-By-Wire Node of ROS project. This node leverages a PID controller to decide value of throttle and brake, a Yaw Controller to decide value of steering of the car and a low pass filter for smoothing values of steering. It leverages the data coming from Waypoint Updater node to generate actuation signals and works as a **Control** Part of the autonomous vehicle system.
+3. Implement TLDetector Node, which detects a Traffic Light and Classify its states based on the camera feed which car receives from a dashcam. This node provides its detection indication to Waypoint Updater which then update target velocity of the upcoming waypoints which are to be followed by the car and also decides if braking is needed in case light state is RED. This node serves as **Perception** Part of the autonomous vehicle system.
 
-** Notes to Reviewer **: 
+**Notes to Reviewer**: 
 
 - This is an individual submission and I have not worked in a team for this project and I don't intend to run this project on Carla hardware.
 - I have implemented TLDetector based on Ground Truth information which we get from state of the light published by the simulator and positions of all the traffic lights on our track which we get from YAML configuration file. I have not actually implemented an Traffic Light Detection and Classification model which can give prediction based on camera feed due to lack of time.
@@ -26,16 +26,16 @@ From time to time, the above mentioned people have helped me directly or indirec
 
 #### Results ####
 
-[image1]: ./img/R1.png "Result 1"
+[image1]: ./imgs/R1.png "Result 1"
 
-[image2]: ./img/R2.png "Result 2"
+[image2]: ./imgs/R2.png "Result 2"
 
-<h3 align="center"> Car at a RED traffic signal, stopped, waiting for singal to go green. <h3>
+<h5 align="center"> Car at a RED traffic signal, stopped, waiting for singal to go green. <h5>
 
 ![alt text][image1]
 
 
-<h3 align="center"> Car starts moving soon as the signal becomes GREEN. <h3>
+<h5 align="center"> Car starts moving soon as the signal becomes GREEN. <h5>
 
 ![alt text][image2]
 
