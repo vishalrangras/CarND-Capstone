@@ -46,6 +46,8 @@ class TLDetector(object):
         config_string = rospy.get_param("/traffic_light_config")
         self.config = yaml.load(config_string)
 
+        self.stop_line_positions = self.config['stop_line_positions']
+
         self.upcoming_red_light_pub = rospy.Publisher('/traffic_waypoint', Int32, queue_size=1)
 
         self.bridge = CvBridge()
@@ -57,7 +59,7 @@ class TLDetector(object):
         self.last_wp = -1
         self.state_count = 0
 
-        self.stop_line_positions = self.config['stop_line_positions']
+        
 
         rospy.spin()
 
@@ -200,7 +202,7 @@ class TLDetector(object):
             return light_waypoint, state
         else:
             return -1, TrafficLight.UNKNOWN
-
+        
     def get_stop_lines_waypoints(self):
         stop_lines_waypoints_list = []
 
@@ -215,11 +217,9 @@ class TLDetector(object):
 
             stop_lines_waypoints_list.append(waypoint_dict)
 
-            sorted_waypoints_list = sorted(stop_lines_waypoints_list, key=lambda k: k['waypoint'])
+        sorted_waypoints_list = sorted(stop_lines_waypoints_list, key=lambda k: k['waypoint'])
 
-            return sorted_waypoints_list
-        
-
+        return sorted_waypoints_list
 
 if __name__ == '__main__':
     try:
