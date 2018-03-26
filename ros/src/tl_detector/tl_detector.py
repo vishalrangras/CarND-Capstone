@@ -29,6 +29,7 @@ class TLDetector(object):
         self.light = 0
         self.light_waypoints_list = None
         self.tree = None
+        self.light_state_list = ["RED", "YELLOW", "GREEN"]
 
         sub1 = rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         sub2 = rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
@@ -94,7 +95,7 @@ class TLDetector(object):
         if self.state != state:
             self.state_count = 0
             self.state = state
-            rospy.loginfo('State of the Traffic light: {}'.format(self.state))
+            rospy.loginfo('State of the Traffic light: {}'.format(self.light_state_list[self.state]))
         elif self.state_count >= STATE_COUNT_THRESHOLD:
             self.last_state = self.state
             light_wp = light_wp if state == TrafficLight.RED else -1
@@ -153,9 +154,14 @@ class TLDetector(object):
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
+
+        # The code will always enter this if block, GT_ENABLED is set True at top
+        # Only using data available from YAML file about Traffic Signs and light state for TL Detection
         if(GT_ENABLED):
             return self.lights[light].state
-        
+
+        # This part will be ignored since not implementing Image based TL Detection
+        # Only implementing waypoint based TL Detection leveraging data from YAML file and light state.
         if(not self.has_image):
             self.prev_light_loc = None
             return False

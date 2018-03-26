@@ -80,6 +80,7 @@ class WaypointUpdater(object):
                 x = waypoint.pose.pose.position.x
                 y = waypoint.pose.pose.position.y
                 waypoint_list.append([x, y])
+            #Waypoints are loaded into K Dimension Tree so that can be searched easily
             self.tree = spatial.KDTree(np.asarray(waypoint_list))
 
         dist, wp_ind = self.tree.query([self.current_pose.position.x, self.current_pose.position.y])
@@ -127,6 +128,8 @@ class WaypointUpdater(object):
         if (self.base_waypoints is not None and self.act_velocity != None):
             waypoint_index = msg.data
 
+            # Check if there is a RED light ahead or not,
+            # if there is one, determine if brake needs to be applied.
             if (waypoint_index != -1 and self.on_brake == False):
                 dist = self.distance(self.base_waypoints, self.next_waypoint, waypoint_index)
 
@@ -135,6 +138,9 @@ class WaypointUpdater(object):
 
                 ref_acceleration = (self.act_velocity**2)/(2*(dist-4))
 
+                # If we need to apply brakes, need to update waypoint velocity
+                # This is determined based on our current velocity and acceleration
+                # Braking can be thought of as deceleration
                 if(ref_acceleration >= 2 and ref_acceleration < 10):
 
                     for i in range(self.next_waypoint, waypoint_index + 1):
@@ -154,6 +160,7 @@ class WaypointUpdater(object):
                     pass
 
             if (waypoint_index == -1 and self.last_stopline_waypoint != -1):
+                #Reseting the waypoint velocity to original one since its not needed to apply brakes
                 for i in self.brake_range:
                     for j in range(i[0], i[1]+1):
                         self.set_waypoint_velocity(self.base_waypoints, j, self.waypoint_velocity)
